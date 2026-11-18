@@ -1,0 +1,144 @@
+# Um único pipeline para integração e entrega contínuas.
+#   pull request para main -> build, testes unitários, testes de aceitação, validação das specs
+#   push para main         -> o mesmo + imagem de contentor no GHCR
+#   tag v*                 -> o mesmo + imagem com a versão + GitHub Release (notas do CHANGELOG)
+# A análise estática de segurança (CodeQL) corre à parte, com a configuração predefinida do GitHub.
+name: CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B -ntp package -DskipTests
+      - uses: actions/upload-artifact@v7
+        with:
+          name: app-jar
+          path: target/estacionamento.jar
+          retention-days: 7
+
+  testes-unitarios:
+    name: Testes unitários
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B -ntp test
+
+  specs:
+    name: Specs OpenSpec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npx -y @fission-ai/openspec@2.2.0 validate --all --strict --no-interactive
+        env:
+          OPENSPEC_TELEMETRY: '0'
+
+  testes-aceitacao:
+    name: Testes de aceitação (Playwright)
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: e2e
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - uses: actions/download-artifact@v8
+        with:
+          name: app-jar
+          path: target
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+        env:
+          APP_CMD: java -jar ../target/estacionamento.jar --spring.profiles.active=e2e
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: relatorio-playwright
+          path: e2e/playwright-report
+          retention-days: 14
+
+  imagem:
+    name: Imagem (GHCR)
+    if: github.event_name == 'push'
+    needs: [testes-unitarios, testes-aceitacao, specs]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: app-jar
+          path: target
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: imagem
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Notas da versão (secção do CHANGELOG)
+        run: |
+          versao="${GITHUB_REF_NAME#v}"
+          awk -v v="[$versao]" '/^## \[/ { p = index($0, v) > 0; next } p' CHANGELOG.md > notas.md
+          cat notas.md
+      - run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notas.md
+        env:
+          GH_TOKEN: ${{ github.token }}

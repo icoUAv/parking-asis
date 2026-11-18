@@ -1,0 +1,27 @@
+schema: spec-driven
+
+context: |
+  Idioma dos artefactos: português europeu.
+  Projeto: reservas de lugares em parques cobertos (exemplo condutor de ASis).
+  Fonte de requisitos: docs/srs/SRS-estacionamento.md (UC, slices, regras BR-nn, casos de teste CT-nn.k).
+  Atores: Condutor (web); Leitor de matrículas (API, simulado nos testes).
+  Conceitos: Parque (lotação), Reserva (matrícula, período [início, fim[, estado ATIVA/CANCELADA).
+  Arquitetura: Spring Boot; pacotes dominio, servico, api, web. Decisões em docs/adr/ (ADR-001 stack, ADR-002 testes).
+  Fluxo de trabalho: GitHub Flow. Uma change por slice, num ramo com o nome da change; integração por pull request.
+
+rules:
+  specs:
+    - Usar os IDs da SRS nos nomes dos requirements (UC-nn) e dos scenarios (CT-nn.k).
+    - Cada requirement e cada scenario tem origem na SRS.
+    - Para alterar um requirement existente, usar MODIFIED com o bloco completo (cabeçalho, texto e todos os scenarios); nunca ADDED com o mesmo nome.
+  design:
+    - Indicar os pacotes afetados e os ADR aplicáveis; um desvio à arquitetura exige um ADR novo.
+  tasks:
+    - Uma tarefa de teste por scenario; o título do teste começa pelo ID do caso de teste (CT-nn.k).
+    - Para cada scenario, primeiro o teste (a falhar), depois a implementação.
+    - Os testes do slice passam no pipeline antes do arquivo.
+
+operations:
+  archive:
+    guidance:
+      - Arquivar no ramo da change, como último commit do pull request, depois da aprovação e antes do merge.
