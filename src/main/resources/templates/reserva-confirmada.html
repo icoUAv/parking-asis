@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reserva confirmada</title>
+    <link rel="stylesheet" th:href="@{/estilo.css}">
+</head>
+<body>
+<header><a href="/">Estacionamento</a></header>
+<main>
+    <h1>Reserva confirmada</h1>
+    <p data-testid="mensagem-sucesso">
+        Reserva n.º <span data-testid="reserva-id" th:text="${reserva.id}">1</span> confirmada para
+        <span th:text="${reserva.matricula}">AA-00-AA</span>
+        no <span th:text="${reserva.parque.nome}">parque</span>.
+    </p>
+    <p>
+        De <span th:text="${reserva.inicio}">início</span> a <span th:text="${reserva.fim}">fim</span>.
+    </p>
+    <a href="/reservas/nova">Nova reserva</a>
+</main>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservar lugar</title>
+    <link rel="stylesheet" th:href="@{/estilo.css}">
+</head>
+<body>
+<header><a href="/">Estacionamento</a></header>
+<main>
+    <h1>Reservar lugar</h1>
+
+    <p th:if="${erro}" class="erro" role="alert" data-testid="mensagem-erro" th:text="${erro}">Erro</p>
+
+    <form method="post" action="/reservas">
+        <label for="parque">Parque</label>
+        <select id="parque" name="parqueId" required>
+            <option th:each="p : ${parques}" th:value="${p.id}" th:text="${p.nome}"
+                    th:selected="${p.id == parqueId}">Parque</option>
+        </select>
+
+        <label for="matricula">Matrícula</label>
+        <input id="matricula" name="matricula" type="text" th:value="${matricula}" required>
+
+        <label for="inicio">Início</label>
+        <input id="inicio" name="inicio" type="datetime-local" th:value="${inicio}" required>
+
+        <label for="fim">Fim</label>
+        <input id="fim" name="fim" type="datetime-local" th:value="${fim}" required>
+
+        <button type="submit">Reservar</button>
+    </form>
+</main>
+</body>
+</html>
