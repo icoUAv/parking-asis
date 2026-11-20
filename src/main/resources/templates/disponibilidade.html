@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar disponibilidade</title>
+    <link rel="stylesheet" th:href="@{/estilo.css}">
+</head>
+<body>
+<header><a href="/">Estacionamento</a></header>
+<main>
+    <h1>Consultar disponibilidade</h1>
+
+    <form method="get" action="/disponibilidade">
+        <label for="parque">Parque</label>
+        <select id="parque" name="parqueId" required>
+            <option th:each="p : ${parques}" th:value="${p.id}" th:text="${p.nome}"
+                    th:selected="${p.id == parqueId}">Parque</option>
+        </select>
+
+        <label for="inicio">Início</label>
+        <input id="inicio" name="inicio" type="datetime-local" th:value="${inicio}" required>
+
+        <label for="fim">Fim</label>
+        <input id="fim" name="fim" type="datetime-local" th:value="${fim}" required>
+
+        <button type="submit">Consultar</button>
+    </form>
+
+    <p th:if="${erro}" class="erro" role="alert" data-testid="mensagem-erro" th:text="${erro}">Erro</p>
+
+    <p th:if="${resultado}" class="resultado" data-testid="lugares-livres">
+        <span th:text="${resultado.livres}">0</span> de <span th:text="${resultado.lotacao}">0</span>
+        lugares livres no período.
+    </p>
+</main>
+</body>
+</html>
