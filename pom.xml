@@ -13,7 +13,7 @@
 
     <groupId>pt.ua.asis</groupId>
     <artifactId>estacionamento</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <name>estacionamento</name>
     <description>Reservas de lugares em parques cobertos (exemplo de ASis)</description>
 
