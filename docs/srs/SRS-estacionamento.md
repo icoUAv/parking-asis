@@ -66,6 +66,8 @@ Dados de base: o Parque do Campus (id 1) tem lotação 2.
 | CT-01.3 | UC-01.S1 | Reserva 10:00–12:00 | Condutor consulta 10:00–12:00 na página | "1 de 2 lugares livres" | Interface |
 | CT-02.1 | UC-02.S1 | Parque sem reservas | Condutor reserva AA-00-AA, 10:00–12:00 | Reserva confirmada com número | Interface |
 | CT-02.2 | UC-02.S1 | — | Pedido 08:00–20:01 (12 h 1 min) | Recusado, BR-01 | API |
+| CT-02.3 | UC-02.S2 | Duas reservas 10:00–12:00 | Condutor reserva 10:00–12:00 na página para CC-22-CC | Mensagem "Não há lugares disponíveis no período pedido."; o formulário mantém os dados | Interface |
+| CT-02.4 | UC-02.S2 | Duas reservas 10:00–12:00 | Pedidos 11:00–13:00 e 12:00–14:00 | O primeiro é recusado (BR-02); o segundo é aceite (fronteira) | API |
 | CT-03.1 | UC-03.S1 | Reserva ativa 10:00–12:00 | Cancelar | Estado CANCELADA; 2 lugares livres | API |
 | CT-03.2 | UC-03.S1 | Reserva já cancelada | Cancelar de novo | Recusado, BR-03 | API |
 | CT-04.1 | UC-04.S1 | Reserva AA-00-AA 10:00–12:00 | Leitura às 10:05 | AUTORIZADA | API |
