@@ -8,6 +8,6 @@
 
 ## 2. Implementação
 
-- [ ] 2.1 Regra de lotação (BR-02) no domínio
-- [ ] 2.2 Verificação da lotação no registo da reserva, com a consulta de sobreposições existente
-- [ ] 2.3 Confirmar a mensagem de recusa na página e a resposta 422 na API
+- [x] 2.1 Regra de lotação (BR-02) no domínio
+- [x] 2.2 Verificação da lotação no registo da reserva, com a consulta de sobreposições existente
+- [x] 2.3 Confirmar a mensagem de recusa na página e a resposta 422 na API
