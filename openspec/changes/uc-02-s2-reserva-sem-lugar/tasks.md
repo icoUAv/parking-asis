@@ -2,9 +2,9 @@
 
 ## 1. Testes (primeiro, a falhar)
 
-- [ ] 1.1 CT-02.3 teste de interface
-- [ ] 1.2 CT-02.4 teste de API (fronteira: fim exclusivo)
-- [ ] 1.3 Teste unitário de BR-02 (fronteira: lotação esgotada)
+- [x] 1.1 CT-02.3 teste de interface
+- [x] 1.2 CT-02.4 teste de API (fronteira: fim exclusivo)
+- [x] 1.3 Teste unitário de BR-02 (fronteira: lotação esgotada)
 
 ## 2. Implementação
 
