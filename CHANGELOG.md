@@ -2,6 +2,12 @@
 
 Alterações por incremento. Cada versão corresponde a uma tag (`v0.1`, `v0.2`, …).
 
+## [0.2] - 2026-11-25
+
+2.º incremento (2.º épico).
+
+- UC-02.S2 Reservar lugar: recusa quando não há lugar disponível (CT-02.3, CT-02.4)
+
 ## [0.1] - 2026-11-25
 
 1.º incremento (1.º épico).
